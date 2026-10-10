@@ -1,0 +1,165 @@
+{
+  "name": "worktree-switcher",
+  "displayName": "Worktree Switcher",
+  "description": "Workspace配下のリポジトリからworktreeを .worktrees/<repo>/<name> に切り出し、別ウィンドウで開く",
+  "version": "0.3.1",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:worktreeSwitcherView"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "worktreeSwitcher",
+          "title": "Worktree",
+          "icon": "media/worktree.svg"
+        }
+      ]
+    },
+    "views": {
+      "worktreeSwitcher": [
+        {
+          "id": "worktreeSwitcherView",
+          "name": "Worktrees",
+          "icon": "media/worktree.svg"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "worktreeSwitcherView",
+        "contents": "worktreeがまだありません。\n[＋ worktreeを作成](command:worktreeSwitcher.create)\n[フォルダを選んで作成](command:worktreeSwitcher.createFromFolder)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "worktreeSwitcher.create",
+        "title": "Create",
+        "category": "Worktree",
+        "icon": "$(add)"
+      },
+      {
+        "command": "worktreeSwitcher.createFromFolder",
+        "title": "Create from Folder...",
+        "category": "Worktree",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "worktreeSwitcher.list",
+        "title": "List / Open",
+        "category": "Worktree"
+      },
+      {
+        "command": "worktreeSwitcher.remove",
+        "title": "Remove",
+        "category": "Worktree",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "worktreeSwitcher.refresh",
+        "title": "Refresh",
+        "category": "Worktree",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "worktreeSwitcher.sortByDate",
+        "title": "Sort by Date",
+        "category": "Worktree",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "worktreeSwitcher.sortByGroup",
+        "title": "Group by Repository",
+        "category": "Worktree",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "worktreeSwitcher.openNode",
+        "title": "Open in New Window",
+        "category": "Worktree",
+        "icon": "$(window)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "worktreeSwitcher.create",
+          "when": "view == worktreeSwitcherView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "worktreeSwitcher.createFromFolder",
+          "when": "view == worktreeSwitcherView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "worktreeSwitcher.sortByDate",
+          "when": "view == worktreeSwitcherView && worktreeSwitcher.sortMode == group",
+          "group": "navigation@3"
+        },
+        {
+          "command": "worktreeSwitcher.sortByGroup",
+          "when": "view == worktreeSwitcherView && worktreeSwitcher.sortMode == date",
+          "group": "navigation@3"
+        },
+        {
+          "command": "worktreeSwitcher.refresh",
+          "when": "view == worktreeSwitcherView",
+          "group": "navigation@4"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "worktreeSwitcher.openNode",
+          "when": "view == worktreeSwitcherView",
+          "group": "inline@1"
+        },
+        {
+          "command": "worktreeSwitcher.remove",
+          "when": "view == worktreeSwitcherView && viewItem == worktree",
+          "group": "inline@2"
+        },
+        {
+          "command": "worktreeSwitcher.remove",
+          "when": "view == worktreeSwitcherView && viewItem == worktree",
+          "group": "1_actions"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Worktree Switcher",
+      "properties": {
+        "worktreeSwitcher.centralDirName": {
+          "type": "string",
+          "default": ".worktrees",
+          "description": "worktreeを集約する中央ディレクトリ名。<Workspace>/<centralDirName>/<repo>/<name> に作成されます。"
+        },
+        "worktreeSwitcher.openInNewWindow": {
+          "type": "boolean",
+          "default": true,
+          "description": "worktree作成/選択後に別ウィンドウで開く。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npm run compile && npx @vscode/vsce package --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.4.0"
+  }
+}
